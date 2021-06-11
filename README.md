@@ -5,6 +5,7 @@ Simple C++ logger for single threaded programs
 ## Dependencies
 ___
 * CMake
+* C++17 
 
 ## Usage example
 ___
