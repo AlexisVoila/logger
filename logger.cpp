@@ -9,7 +9,7 @@
 #include "logger.h"
 
 namespace logging {
-    logger::logger() : log_output_{output::console}, severity_{level::info} {}
+    logger::logger() : output_{output::console}, level_{level::info} {}
 
     logger& logging::logger::get() {
         if (instance_)
@@ -29,21 +29,21 @@ namespace logging {
         get().initialize_impl(file_path, log_output, log_level);
     }
 
-    void logger::initialize_impl(const std::string& file_path, output log_output, level severity) {
+    void logger::initialize_impl(const std::string& file_path, output log_output, level log_level) {
         if (log_output == output::file || log_output == output::file_and_console)
             file_ = std::ofstream(file_path);
-        log_output_ = log_output;
-        severity_ = severity;
+        output_ = log_output;
+        level_ = log_level;
     }
 
-    std::string logger::make_log_record_prefix(const level severity) {
+    std::string logger::make_log_record_prefix(const level log_level) {
         auto time = timestamp();
-        auto wrapped_severity = "[" + severity_to_string(severity) + "]\t";
-        return time + ' ' + wrapped_severity;
+        auto wrapped_level = "[" + log_level_to_string(log_level) + "]\t";
+        return time + ' ' + wrapped_level;
     }
 
-    std::string logger::severity_to_string(level severity) {
-        const static std::unordered_map<level, std::string> severity_map {
+    std::string logger::log_level_to_string(level log_level) {
+        const static std::unordered_map<level, std::string> level_string_map {
             {level::debug,   "debug"},
             {level::trace,   "trace"},
             {level::info,    "info"},
@@ -52,8 +52,8 @@ namespace logging {
             {level::fatal,   "fatal"},
         };
 
-        auto it = severity_map.find(severity);
-        if (it != severity_map.end())
+        auto it = level_string_map.find(log_level);
+        if (it != level_string_map.end())
             return it->second;
 
         return {};
@@ -72,20 +72,20 @@ namespace logging {
         return ss.str();
     }
 
-    void logger::log(const std::string& message, logger::level severity) {
-        if (severity < severity_ || message.empty() || log_output_ == none)
+    void logger::log(const std::string& message, logger::level log_level) {
+        if (log_level < level_ || message.empty() || output_ == none)
             return;
 
-        auto pre_message = make_log_record_prefix(severity);
+        auto pre_message = make_log_record_prefix(log_level);
         auto total_message = pre_message + message;
         if (total_message[total_message.size() - 1] != '\n')
             total_message.push_back('\n');
 
-        auto& out_stream = (severity <= level::info) ? std::cout : std::cerr;
-        if (log_output_ == console || log_output_ == file_and_console)
+        auto& out_stream = (log_level <= level::info) ? std::cout : std::cerr;
+        if (output_ == console || output_ == file_and_console)
             out_stream << total_message;
 
-        if (file_.is_open() && (log_output_ & file))
+        if (file_.is_open() && (output_ & file))
             file_ << total_message;
     }
 

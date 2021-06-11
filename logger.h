@@ -55,26 +55,26 @@ namespace logging {
         static logger& get();
 
         template<typename T>
-        void log(const T& message, logger::level severity) {
+        void log(const T& message, logger::level log_level) {
             std::stringstream ss;
             ss << message;
-            log(ss.str(), severity);
+            log(ss.str(), log_level);
         }
 
-        void log(const std::string& message, level severity = level::info);
+        void log(const std::string& message, level log_level = level::info);
 
-        void initialize_impl(const std::string& file_path, output log_output, level severity);
+        void initialize_impl(const std::string& file_path, output log_output, level log_level);
 
         static void create();
-        static std::string make_log_record_prefix(level severity);
-        static std::string severity_to_string(level severity);
+        static std::string make_log_record_prefix(level log_level);
+        static std::string log_level_to_string(level log_level);
         static std::string timestamp();
 
     private:
         static inline logger* instance_ = nullptr;
         std::ofstream file_;
-        output log_output_ = console;
-        level severity_ = level::info;
+        output output_ = console;
+        level level_ = level::info;
     };
 }
 
