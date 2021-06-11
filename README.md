@@ -9,22 +9,18 @@ ___
 ## Usage example
 ___
 ```
-#include "thread_unsafe_logger.h"
+#include "logger.h"
 
 void usage_example() {
-    using logging::logger;
+    using log = logging::logger;
 
-    logger& lg = logging::thread_unsafe_logger::get();
-
-    lg.init("../test.log", logger::file_and_console);
-    lg.log("debug message", logger::debug);
-    lg.log("trace message", logger::trace);
-    lg.log("info message", logger::info);
-    lg.log("warning message", logger::warning);
-    lg.log("error message", logger::error);
-    lg.log("fatal message", logger::fatal);
-
-    logging::thread_unsafe_logger::get().log("record from thread_unsafe_logger", logger::warning);
+    log::initialize("../test.log", log::console, log::level::info);
+    log::debug("debug message");
+    log::trace("trace message");
+    log::info("info message");
+    log::warning("warning message");
+    log::error("error message");
+    log::fatal("fatal message");
 }
 
 int main()
@@ -33,12 +29,11 @@ int main()
     return 0;
 }
 ```
-### Output
+### output
 ```
-2021-05-06 22:54:39.930 [info] info message
-2021-05-06 22:54:39.930 [warning] warning message
-2021-05-06 22:54:39.930 [error] error message
-2021-05-06 22:54:39.930 [fatal] fatal message
-2021-05-06 22:54:39.930 [warning] record from thread_unsafe_logger
+2021-06-11 23:03:49.418 [info]  info message
+2021-06-11 23:03:49.418 [warning]       warning message
+2021-06-11 23:03:49.418 [error] error message
+2021-06-11 23:03:49.418 [fatal] fatal message
 
 ```
