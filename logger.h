@@ -28,8 +28,6 @@ namespace logging {
             file_and_console
         };
 
-        static logger& get();
-
         static void initialize(const std::string& file_path = "",
                                output log_output = console, level log_level = level::info);
 
@@ -51,8 +49,10 @@ namespace logging {
         logger& operator=(logger&& other) = delete;
 
     private:
-        logger() = default;
+        logger();
         ~logger();
+
+        static logger& get();
 
         template<typename T>
         void log(const T& message, logger::level severity) {

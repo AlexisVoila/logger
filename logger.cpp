@@ -9,6 +9,8 @@
 #include "logger.h"
 
 namespace logging {
+    logger::logger() : log_output_{output::console}, severity_{level::info} {}
+
     logger& logging::logger::get() {
         if (instance_)
             return *instance_;
